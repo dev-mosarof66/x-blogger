@@ -16,7 +16,7 @@ import Tips_Tricks from './pages/user/Tips&Tricks'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import VerifyEmail from './pages/user/VerifyEmail'
-
+import ProfileLayout from './pages/user/ProfileLayout'
 import LoadingSpinner from './components/custom/Loader'
 import Profile from './pages/user/Profile'
 
@@ -49,7 +49,7 @@ const App = () => {
         if (error?.response?.status === 401) {
           console.warn('Not logged in')
         } else {
-          console.error('error in fetching user data:',error);
+          console.error('error in fetching user data:', error);
         }
       } finally {
         setLoading(false)
@@ -70,72 +70,74 @@ const App = () => {
 
 
   return (
-      <Suspense fallback={<LoadingSpinner />}>
-        <ThemeProvider>
-          <Routes>
+    <Suspense fallback={<LoadingSpinner />}>
+      <ThemeProvider>
+        <Routes>
 
-            {/* user  */}
-            <Route path='/' element={<Layout />}>
-              <Route index element={<Landing />} />
-              <Route path='blogs' element={<Blogs />} />
-              <Route path='blog/:id' element={<Blog />} />
-              <Route path='news-letter' element={<NewsLetter />} />
-
-
-              <Route
-                path='digest'
-                element={
-                  user?.isPro ? (
-                    <DailyDigest />
-                  ) : (
-                    <Navigate to='/login' replace />
-                  )
-                }
-              />
-              <Route
-                path='tips&tricks'
-                element={
-                  user?.isPro ? (
-                    <Tips_Tricks />
-                  ) : (
-                    <Navigate to='/login' replace />
-                  )
-                }
-              />
-            </Route>
-
-            {/* admin */}
-
-            <Route path='/admin' element={<AdminLayout />} >
-
-              <Route index element={<AdminHome />} />
-              <Route path='profile' element={<AdminProfile />} />
-              <Route path='blogs/all' element={<BlogList />} />
-              <Route path='blogs/create' element={<CreateBlog />} />
-            </Route>
-
-            <Route
-              path='/login'
-              element={user ? <Navigate to='/' replace /> : <Login />}
-            />
-            <Route
-              path='/register'
-              element={user ? <Navigate to='/' replace /> : <Register />}
-            />
+          {/* user  */}
+          <Route path='/' element={<Layout />}>
+            <Route index element={<Landing />} />
+            <Route path='blogs' element={<Blogs />} />
+            <Route path='blog/:id' element={<Blog />} />
+            <Route path='news-letter' element={<NewsLetter />} />
             <Route
               path='/profile'
-              element={user ? <Profile /> : <Navigate to='/' replace />}
+              element={user ? <ProfileLayout /> : <Navigate to='/' replace />}>
+              <Route index element={<Profile />} />
+
+            </Route>
+
+            <Route
+              path='digest'
+              element={
+                user?.isPro ? (
+                  <DailyDigest />
+                ) : (
+                  <Navigate to='/login' replace />
+                )
+              }
             />
             <Route
-              path='/verify-email/:id'
-              element={user ? <Navigate to='/' replace /> : <VerifyEmail />}
+              path='tips&tricks'
+              element={
+                user?.isPro ? (
+                  <Tips_Tricks />
+                ) : (
+                  <Navigate to='/login' replace />
+                )
+              }
             />
+          </Route>
+
+          {/* admin */}
+
+          <Route path='/admin' element={<AdminLayout />} >
+
+            <Route index element={<AdminHome />} />
+            <Route path='profile' element={<AdminProfile />} />
+            <Route path='blogs/all' element={<BlogList />} />
+            <Route path='blogs/create' element={<CreateBlog />} />
+          </Route>
+
+          <Route
+            path='/login'
+            element={user ? <Navigate to='/' replace /> : <Login />}
+          />
+          <Route
+            path='/register'
+            element={user ? <Navigate to='/' replace /> : <Register />}
+          />
+
+          <Route
+            path='/verify-email/:id'
+            element={user ? <Navigate to='/' replace /> : <VerifyEmail />}
+          />
 
 
-            <Route path='*' element={<Navigate to='/' replace />} />
-          </Routes>
-        </ThemeProvider>
-      </Suspense>
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Routes>
+      </ThemeProvider>
+    </Suspense>
   )
 }
 

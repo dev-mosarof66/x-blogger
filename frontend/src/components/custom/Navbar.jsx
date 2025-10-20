@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaTimes, FaUser } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -21,7 +21,12 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
     const { user } = useSelector(state => state.user)
+    const location = useLocation()
 
+
+    if (location.pathname === '/profile') {
+        return null
+    }
 
 
     return (
