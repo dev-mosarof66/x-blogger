@@ -1,5 +1,4 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
-import { Theme } from "@radix-ui/themes"
 import { useDispatch, useSelector } from 'react-redux'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -71,7 +70,6 @@ const App = () => {
 
 
   return (
-    <Theme>
       <Suspense fallback={<LoadingSpinner />}>
         <ThemeProvider>
           <Routes>
@@ -138,7 +136,6 @@ const App = () => {
           </Routes>
         </ThemeProvider>
       </Suspense>
-    </Theme>
   )
 }
 
