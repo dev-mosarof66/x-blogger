@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+@import "@radix-ui/themes/styles.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme{
+    --breakpoint-xs: 33rem;
+}
+
+
+.scrollbar-hidden{
+    scrollbar-width: none;
+}
