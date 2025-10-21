@@ -3,10 +3,14 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { FaEye, FaSave } from "react-icons/fa";
 import PreviewBlog from "../../components/admin/PreviewBlog";
+import { toast } from 'react-hot-toast'
+import BlogModal from "../../components/admin/AdminBlogModal";
+
 
 function BlogEditor() {
   const [value, setValue] = useState("");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [saveBlogModal, setSaveBlogModal] = useState(false)
   const quillRef = useRef(null);
 
   // Image upload handler
@@ -45,18 +49,22 @@ function BlogEditor() {
     },
   };
 
-  const handleSaveDraft = () => {
-    localStorage.setItem("blogDraft", value);
-    alert("✅ Draft saved locally!");
+  const handleSaveDraft =  () => {
+    if (value.trim() === '') {
+      toast.error('No word found in your blog.')
+      return;
+    }
+    setSaveBlogModal(true)
   };
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex justify-between items-center p-4 text-black dark:text-white border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-xl font-semibold">📝 Blog Editor</h2>
         <div className="flex gap-3">
           <button
             onClick={() => setIsPreviewOpen(true)}
+            disabled={value.trim() === '' ? true : false}
             className="flex items-center justify-center gap-1 px-2 py-2 text-sm rounded-lg border border-purple-500 hover:bg-purple-600 text-gray-900 dark:text-gray-100 active:scale-95 cursor-pointer transition-all duration-300 delay-75"
           >
             <FaEye />
@@ -87,6 +95,7 @@ function BlogEditor() {
 
       {/* Preview Modal */}
       <PreviewBlog value={value} isPreviewOpen={isPreviewOpen} setIsPreviewOpen={setIsPreviewOpen} />
+      <BlogModal open={saveBlogModal} setOpen={setSaveBlogModal} content={value} />
     </div>
   );
 }

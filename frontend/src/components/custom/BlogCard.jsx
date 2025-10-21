@@ -4,9 +4,11 @@ import { FaEdit, FaEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { FcLike } from "react-icons/fc";
+import moment from 'moment'
 
-const BlogCard = ({ i, admin = false, views, handler }) => {
+const BlogCard = ({ i, admin = false, views, handler, blog }) => {
     const router = useNavigate();
+    console.log(blog)
 
     return (
         <motion.div
@@ -14,7 +16,7 @@ const BlogCard = ({ i, admin = false, views, handler }) => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
             viewport={{ once: true }}
-            onClick={() =>  router(`/blog/${i}`)}
+            onClick={() => router(`/blog/${i}`)}
             className="group bg-gray-100 dark:bg-gray-800 relative shadow-md rounded-2xl overflow-hidden 
                  hover:shadow-black/20 active:scale-95 cursor-pointer 
                  transition-all duration-300 delay-75 border border-transparent"
@@ -22,25 +24,30 @@ const BlogCard = ({ i, admin = false, views, handler }) => {
             {/* Image */}
             <div className="relative w-full h-48 overflow-hidden">
                 <img
-                    src={`https://picsum.photos/seed/tech${i}/600/300`}
+                    src={blog.coverImage.url}
                     alt="blog"
                     className="w-full h-full object-cover transition-transform duration-500"
                 />
                 {/* Category Chip */}
-                <span className="absolute top-3 left-3 bg-purple-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
-                    Technology
-                </span>
+                <div className="w-full bg-black">
+                    <div className=" absolute top-3 left-3">
+                        {
+                            blog.tags.map((tag, ind) => (
+                                <p key={ind} className=" bg-purple-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
+                                    {tag}
+                                </p>
+                            ))
+                        }
+                    </div>
+                </div>
             </div>
 
             {/* Content */}
             <div className="p-2 flex flex-col">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 transition-all duration-300 delay-75">
-                    Latest Tech Insight {i}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 transition-all duration-300 delay-75 truncate">
+                    {blog.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
-                    A short teaser about emerging tech trends like AI, Web3, cloud, and DevOps shaping the future of innovation.
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Published: Oct 15, 2025</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Published: {moment(blog.createdAt).format("DD - MM - YY")}</p>
 
                 {/* Read More (User Mode) */}
                 {!admin && (
@@ -58,10 +65,10 @@ const BlogCard = ({ i, admin = false, views, handler }) => {
                         {/* Stats */}
                         <div className="flex  items-center gap-4 text-base text-gray-600 dark:text-gray-400 ">
                             <p className="flex items-center gap-1">
-                                <FaEye className="text-purple-500" /> {views || 0}
+                                <FaEye className="text-purple-500" /> {blog.views || 0}
                             </p>
                             <p className="flex items-center gap-1">
-                                <FcLike /> 10 
+                                <FcLike /> {blog.reactions.length}
                             </p>
                         </div>
 

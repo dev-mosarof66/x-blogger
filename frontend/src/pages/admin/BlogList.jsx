@@ -35,6 +35,8 @@ const BlogList = () => {
     fetchBlogs();
   }, [dispatch]);
 
+  console.log(blogs)
+
   return (
     <div className="w-full h-full p-2 space-y-6 relative">
       {/* Create Blog Button */}
