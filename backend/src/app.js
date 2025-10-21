@@ -10,42 +10,48 @@ const app = express();
 app.use(helmet());
 
 const allowedOrigins = [
-  "https://x-blogger.vercel.app"
+    "https://x-blogger.vercel.app"
 ];
 
 // ✅ CORS middleware
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // for mobile, Postman, etc.
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(null, false); // ❌ do NOT throw an error
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
+    cors({
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true); // for mobile, Postman, etc.
+            if (allowedOrigins.includes(origin)) return callback(null, true);
+            return callback(null, false); // ❌ do NOT throw an error
+        },
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true,
+    })
 );
 
 // ✅ Handle preflight requests
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+app.use((req, res, next) => {
+    if (req.method === "OPTIONS") {
+        res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+        res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 app.use(cookieParser());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+    app.use(morgan("dev"));
 }
 
 // Rate limiter
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: "Too many requests from this IP, please try again later",
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: "Too many requests from this IP, please try again later",
 });
 app.use(limiter);
 
@@ -54,7 +60,7 @@ app.use(express.static("public"));
 
 // Health check
 app.get("/health-check", (req, res) => {
-  res.send("Blogging platform API is running...");
+    res.send("Blogging platform API is running...");
 });
 
 // Routes
