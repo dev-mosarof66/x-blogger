@@ -144,7 +144,14 @@ export const deleteBlog = async (req, res) => {
     }
 };
 
-
+export const getAllBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find().sort({ createdAt: -1 });
+        return res.status(201).json({ success: true, blogs });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 export const toggleBlogStatus = async (req, res) => {
     try {
@@ -254,16 +261,27 @@ export const getAnalytics = async (req, res) => {
             .limit(5)
             .select("title views");
 
-       return res.status(200).json({
+
+        let totalViews = 0;
+        for (let i = 0; i < totalBlogs.length; i++) {
+            totalViews += totalBlogs[i].views
+        }
+        let totalReactions = 0;
+        for (let i = 0; i < totalBlogs.length; i++) {
+            totalReactions += totalBlogs[i].reactions.length
+        }
+
+        return res.status(200).json({
             success: true,
             status: {
-                totalBlogs,
-                totalUsers,
-                totalComments,
-                topBlogs,
+                blogs: totalBlogs,
+                readers: totalUsers,
+                comments: totalComments,
+                views: totalViews,
+                reactions: totalReactions
             },
         });
     } catch (error) {
-       return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message });
     }
 };

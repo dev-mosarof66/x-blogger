@@ -14,14 +14,7 @@ import bcrypt from 'bcryptjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const getAllBlogs = async (req, res) => {
-    try {
-        const blogs = await Blog.find().sort({ createdAt: -1 });
-        return res.status(201).json({ success: true, blogs });
-    } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
-    }
-};
+
 
 export const registerUser = async (req, res) => {
     try {
@@ -255,8 +248,8 @@ export const resetPassword = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
 
-    req.cookie('access_token', null)
-    req.cookie('refresh_token', null)
+    res.cookie('access_token', null)
+    res.cookie('refresh_token', null)
     return res.status(201).json({ success: true, message: "Logged out successfully" });
 };
 
@@ -389,6 +382,15 @@ export const reactBlog = async (req, res) => {
             validateBeforeSave: false
         });
         return res.status(201).json({ success: true, blog });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+export const getAllBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
+        console.log(blogs)
+        return res.status(201).json({ success: true, blogs });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
