@@ -8,24 +8,24 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-    origin: ['http://localhost:5173','http://localhost:5173'],
-    credentials:true
+    origin: ['http://localhost:5173', 'https://x-blogger.vercel.app', 'https://x-blogger-qpo3ewv6x-mosarof.vercel.app'],
+    credentials: true
 }));
 app.use(cookieParser({
-    origin: ['http://localhost:5173','http://localhost:5173'],
-    credentials:true
+    origin: ['http://localhost:5173', 'https://x-blogger.vercel.app', 'https://x-blogger-qpo3ewv6x-mosarof.vercel.app'],
+    credentials: true
 }));
 
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
 }
 
- const limiter = rateLimit({
+const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
-   message: "Too many requests from this IP, please try again later",
- });
- app.use(limiter);
+    message: "Too many requests from this IP, please try again later",
+});
+app.use(limiter);
 
 app.use(express.json({
     limit: "1MB"
