@@ -8,7 +8,10 @@ import {
 } from "react-icons/fa";
 import { MdHome, MdArticle, MdPeople, MdLogout, MdSettings } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import axiosInstance from '../../utils/axios'
+import { useDispatch } from "react-redux";
+import { setUser } from "../../features/user.slices";
+import { toast } from 'react-hot-toast'
 const items = [
     {
         id: 1,
@@ -60,6 +63,7 @@ const AdminSidebar = () => {
     const [activePath, setActivePath] = useState("");
     const location = useLocation();
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const toggleSub = (id) => {
         setOpenSub(openSub === id ? null : id);
@@ -69,7 +73,6 @@ const AdminSidebar = () => {
         setActivePath(location.pathname);
     }, [location]);
 
-    // ✅ FIXED FUNCTION
     const isActive = (path, exact = false) => {
         if (exact) return activePath === path;
         return activePath === path || activePath.startsWith(`${path}/`);
@@ -82,6 +85,21 @@ const AdminSidebar = () => {
         }
         setActivePath(item.path);
         navigate(item.path)
+    }
+
+    const handleLogout = async () => {
+        try {
+            const res = await axiosInstance.post('/user/logout')
+            console.log(res.data)
+            if (res.data.success) {
+                dispatch(setUser(null))
+                toast.success("Logged out successfully.")
+                navigate('/')
+            }
+
+        } catch (error) {
+            console.log('error while logging out the user : ', error)
+        }
     }
 
     return (
@@ -143,7 +161,7 @@ const AdminSidebar = () => {
                 </ul>
             </div>
 
-            <div className="w-full flex items-center gap-2 p-2 bg-purple-700 rounded-md hover:bg-purple-600 active:scale-95 cursor-pointer transition-all duration-300 delay-75 text-white">
+            <div onClick={handleLogout} className="w-full flex items-center gap-2 p-2 bg-purple-700 rounded-md hover:bg-purple-600 active:scale-95 cursor-pointer transition-all duration-300 delay-75 text-white">
                 <MdLogout size={22} />
                 <span>Logout</span>
             </div>

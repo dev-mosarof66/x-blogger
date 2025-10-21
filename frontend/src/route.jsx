@@ -82,9 +82,8 @@ const App = () => {
             <Route path='news-letter' element={<NewsLetter />} />
             <Route
               path='/profile'
-              element={user ? <ProfileLayout /> : <Navigate to='/' replace />}>
+              element={user && user.role === 'user' ? <ProfileLayout /> : <Navigate to='/' replace />}>
               <Route index element={<Profile />} />
-
             </Route>
 
             <Route

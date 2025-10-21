@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { MdLogout, MdPerson } from "react-icons/md";
-import ThemeSetter from "./ThemeSetter";
+import ThemeSetter from "../custom/ThemeSetter";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import ProfileBox from "../custom/ProfileBox";
 
 const AdminHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
+
+  console.log(user);
 
   const handleLogout = async () => {
     console.log("admin logout clicked.");
@@ -17,17 +22,7 @@ const AdminHeader = () => {
 
       {/* Profile */}
       <div className="relative">
-        <div
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <img
-            src="https://i.pravatar.cc/40?img=8"
-            alt="Admin Avatar"
-            className="w-8 h-8 rounded-full border border-purple-500"
-          />
-        </div>
-
+        <ProfileBox user={user} onClick={() => setMenuOpen(!menuOpen)} />
         {/* Dropdown */}
         {menuOpen && (
           <div

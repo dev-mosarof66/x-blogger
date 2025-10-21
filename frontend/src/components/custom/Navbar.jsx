@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { FaTimes, FaUser } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import ThemeSetter from "./ThemeSetter";
+import ProfileBox from "./ProfileBox";
 
 const navItems = [
     { label: "Home", path: "/", auth: false },
@@ -78,52 +79,10 @@ const Navbar = () => {
                     <ThemeSetter />
 
                     {/* User button */}
-                    <div
-                        className="text-gray-700 dark:text-gray-200 hover:text-red-500 transition duration-300 cursor-pointer delay-75"
-                    >
-                        {
-                            user ?
-                                <div onClick={() => navigate('/profile')}>
-                                    {
-                                        (
-                                            user.avatar?.url ? (
-                                                <img
-                                                    src={user.avatar?.url}
-                                                    alt={user.name || "User"}
-                                                    className="w-8 h-8 rounded-full object-cover border-2 border-purple-500 cursor-pointer"
-                                                    onClick={() => {
-                                                        setMenuOpen(false);
-                                                        navigate("/profile");
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div
-                                                    onClick={() => {
-                                                        setMenuOpen(false);
-                                                        navigate("/profile");
-                                                    }}
-                                                    className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-600 text-white font-semibold cursor-pointer"
-                                                >
-                                                    {user.name?.charAt(0).toUpperCase()}
-                                                </div>
-                                            )
-                                        )
-                                    }
-                                </div> :
-                                <div onClick={() => navigate('/login')}>
-
-                                    <FaUser
-                                        size={20}
-                                        className="cursor-pointer"
-                                        onClick={() => {
-                                            setMenuOpen(false);
-                                            navigate("/login");
-                                        }}
-                                    />
-                                </div>
-                        }
-
-                    </div>
+                    <ProfileBox
+                        user={user}
+                        onClick={() => user.role === 'admin' ? navigate('/admin') : navigate('/profile')}
+                    />
                 </div>
 
                 {/* Mobile menu toggle */}
@@ -196,52 +155,10 @@ const Navbar = () => {
                                         {/* Theme Toggle */}
                                         <ThemeSetter />
                                         {/* profile button  */}
-                                        <div
-                                            className="text-gray-700 dark:text-gray-200 hover:text-red-500 transition duration-300 cursor-pointer delay-75"
-                                        >
-                                            {
-                                                user ?
-                                                    <div onClick={() => navigate('/profile')}>
-                                                        {
-                                                            (
-                                                                user.avatar?.url ? (
-                                                                    <img
-                                                                        src={user.avatar?.url}
-                                                                        alt={user.name || "User"}
-                                                                        className="w-8 h-8 rounded-full object-cover border-2 border-purple-500 cursor-pointer"
-                                                                        onClick={() => {
-                                                                            setMenuOpen(false);
-                                                                            navigate("/profile");
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <div
-                                                                        onClick={() => {
-                                                                            setMenuOpen(false);
-                                                                            navigate("/profile");
-                                                                        }}
-                                                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-600 text-white font-semibold cursor-pointer"
-                                                                    >
-                                                                        {user.name?.charAt(0).toUpperCase()}
-                                                                    </div>
-                                                                )
-                                                            )
-                                                        }
-                                                    </div> :
-                                                    <div onClick={() => navigate('/login')}>
-
-                                                        <FaUser
-                                                            size={20}
-                                                            className="cursor-pointer"
-                                                            onClick={() => {
-                                                                setMenuOpen(false);
-                                                                navigate("/login");
-                                                            }}
-                                                        />
-                                                    </div>
-                                            }
-
-                                        </div>
+                                        <ProfileBox
+                                            user={user}
+                                            onClick={() => user.role === 'admin' ? navigate('/admin') : navigate('/profile')}
+                                        />
                                     </div>
                                 </div>
                             </div>

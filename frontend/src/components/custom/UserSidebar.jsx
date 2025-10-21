@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import { FaHome, FaUserEdit, FaCog, FaSignOutAlt } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import ThemeSetter from "./ThemeSetter";
 
 const Sidebar = () => {
@@ -10,6 +10,8 @@ const Sidebar = () => {
         { name: "Update Profile", icon: <FaUserEdit />, path: "/update-profile" },
         { name: "Settings", icon: <FaCog />, path: "/settings" },
     ];
+
+    const navigate = useNavigate()
 
     // Example logout handler (replace with real auth logic)
     const handleLogout = () => {
@@ -23,7 +25,7 @@ const Sidebar = () => {
                 <div className="w-full flex flex-col gap-4">
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                        <h1 className="text-lg font-semibold text-purple-600">X-Blogger</h1>
+                        <h1 onClick={()=> navigate('/')} className="text-lg font-semibold text-purple-600 hover:text-purple-700 active:scale-95 cursor-pointer transition-all duration-300 delay-75">X-Blogger</h1>
                     </div>
 
                     {/* Menu Items */}
