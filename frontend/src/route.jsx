@@ -26,7 +26,9 @@ import AdminHome from './pages/admin/Home'
 import BlogList from './pages/admin/BlogList'
 import CreateBlog from './pages/admin/CreateBlog'
 import AdminProfile from './pages/admin/Profile'
-
+import ManageTags from './pages/admin/ManageTags'
+import ManageUsers from './pages/admin/ManageUsers'
+import AdminSettings from './pages/admin/Settings'
 const App = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -116,6 +118,9 @@ const App = () => {
             <Route path='profile' element={<AdminProfile />} />
             <Route path='blogs/all' element={<BlogList />} />
             <Route path='blogs/create' element={<CreateBlog />} />
+            <Route path='tags' element={<ManageTags />} />
+            <Route path='users' element={<ManageUsers />} />
+            <Route path='settings' element={<AdminSettings />} />
           </Route>
 
           <Route

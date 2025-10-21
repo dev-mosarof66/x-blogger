@@ -19,7 +19,7 @@ const Landing = () => {
                     transition={{ duration: 0.8 }}
                     className="flex flex-col gap-5 md:w-1/2"
                 >
-                    <h1 className="w-full max-w-sm text-3xl sm:text-4xl lg:text-5xl bg-gradient-to-r from-purple-600 to-cyan-400 text-transparent bg-clip-text">
+                    <h1 className="w-full max-w-sm text-3xl xs:text-4xl lg:text-5xl bg-gradient-to-r from-purple-600 to-cyan-400 text-transparent bg-clip-text">
                         Start Your Tech Career
                     </h1>
                     <p className="text-gray-600 dark:text-gray-300 text-lg">
