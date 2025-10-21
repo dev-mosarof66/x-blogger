@@ -10,6 +10,7 @@ import { sendEmail } from '../utils/nodemailer.js'
 import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 import bcrypt from 'bcryptjs';
+import { cookieOptions } from '../utils/cookie-options.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,7 +52,7 @@ export const registerUser = async (req, res) => {
 
         const mail = sendEmail(email, 'Email Verfication', template)
         if (!mail) return res.status(402).json({ success: false, message: "Error while sending email." });
-        const token = await jwt.sign(
+        const token = jwt.sign(
             {
                 code, user: {
                     name,
@@ -62,7 +63,7 @@ export const registerUser = async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '2m' }
         );
-        res.cookie('token', token)
+        res.cookie('token', token, cookieOptions)
         return res.status(201).json({ success: true, message: "Verfication email sent successfully.", token });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -126,8 +127,8 @@ export const loginUser = async (req, res) => {
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
-        res.cookie('access_token', accessToken)
-        res.cookie('refresh_token', refreshToken)
+        res.cookie('access_token', accessToken,cookieOptions)
+        res.cookie('refresh_token', refreshToken,cookieOptions)
 
         return res.status(201).json({ success: true, user });
     } catch (error) {
