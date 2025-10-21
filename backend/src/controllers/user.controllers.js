@@ -78,7 +78,7 @@ export const verifyEmail = async (req, res) => {
         if (!code)
             return res.status(401).json({ success: false, message: "Verfication code not found." });
 
-        const { code: savedCode, user } = req.cookies.user;
+        const { code: savedCode, user } = req.cookies.token;
 
         if (code !== savedCode) {
             return res.status(401).json({ success: false, message: "Verfication code is invalid." });
