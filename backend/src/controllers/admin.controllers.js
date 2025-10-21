@@ -8,6 +8,8 @@ import imagekit from "../utils/imagekit.js";
 export const createBlog = async (req, res) => {
     try {
         const { title, content, tags, status } = req.body;
+        console.log('inside creating new blogs : ', req.body)
+        console.log(req.file)
 
         if (!title) {
             return res.status(401).json({
@@ -28,7 +30,8 @@ export const createBlog = async (req, res) => {
             })
         }
 
-        const path = req?.files;
+        const path = req?.file;
+
 
         if (!path) {
             return res.status(401).json({
@@ -43,17 +46,24 @@ export const createBlog = async (req, res) => {
             folder: "/blogger/coverImage"
         })
 
+
+        if (!upload) {
+            return res.status(402).json({
+                message: "Error while uploading image.",
+                success: false
+            })
+        }
+
+        console.log(upload)
+
         fs.unlinkSync(req.file.path);
-
-
-
 
         const blog = await Blog({
             title,
             content,
             tags,
             coverImage: {
-                public_ic: upload.fileId,
+                public_id: upload.fileId,
                 url: upload.url
             },
             status: status || "draft",

@@ -3,13 +3,11 @@ import User from "../models/user.models.js";
 
 export const verifyToken = async (req, res, next) => {
     try {
-        console.log('inside the middleware.', req.cookies)
         let token = req.cookies.access_token;
 
         if (!token) {
             return res.status(401).json({ success: false, message: "No token found." });
         }
-        console.log(token)
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
 
