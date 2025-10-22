@@ -4,11 +4,18 @@ import { FaEdit, FaEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { FcLike } from "react-icons/fc";
+import { FileText, CheckCircle, Clock } from "lucide-react";
 import moment from 'moment'
 
-const BlogCard = ({ i, admin = false, views, handler, blog }) => {
+const BlogCard = ({ i, admin = false, handler, blog }) => {
     const router = useNavigate();
     console.log(blog)
+
+    if (!blog) {
+        return <p>
+            No blog card.
+        </p>
+    }
 
     return (
         <motion.div
@@ -40,6 +47,29 @@ const BlogCard = ({ i, admin = false, views, handler, blog }) => {
                         }
                     </div>
                 </div>
+
+                {/* for just admin  - darft / published */}
+                {
+                    admin && (
+                        <div
+                            className={`absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium shadow-sm 
+                            ${blog.status === "published"
+                                    ? "bg-green-100 text-green-700"
+                                    : blog.status === "draft"
+                                        ? "bg-yellow-100 text-yellow-700"
+                                        : "bg-gray-100 text-gray-700"
+                                }`}
+                        >
+                            {blog.status === "published" ? (
+                                <CheckCircle size={14} />
+                            ) : blog.status === "draft" ? (
+                                <Clock size={14} />
+                            ) : (
+                                <FileText size={14} />
+                            )}
+                            <span className="capitalize hidden xs:block md:hidden lg:block">{blog.status}</span>
+                        </div>
+                    )}
             </div>
 
             {/* Content */}
@@ -52,7 +82,7 @@ const BlogCard = ({ i, admin = false, views, handler, blog }) => {
                 {/* Read More (User Mode) */}
                 {!admin && (
                     <Link
-                        to={`/blog/${i}`}
+                        to={`/blog/${blog._id}`}
                         className="text-purple-600 text-sm font-medium mt-1 hover:underline"
                     >
                         Read More →
@@ -77,7 +107,7 @@ const BlogCard = ({ i, admin = false, views, handler, blog }) => {
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    router(`/admin/edit-blog/${i}`);
+                                    router(`/admin/edit-blog/${blog._id}`);
                                 }}
                                 className="p-2 rounded-lg hover:bg-purple-600/10 active:scale-95  cursor-pointer transition-all duration-300 delay-75"
                                 title="Edit Blog"

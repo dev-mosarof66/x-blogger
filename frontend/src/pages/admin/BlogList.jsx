@@ -67,9 +67,9 @@ const BlogList = () => {
               <BlogCard
                 key={blog._id || i}
                 blog={blog}
+                i={i}
                 admin={true}
                 handleBlogEdit={handleBlogEdit}
-                handleDeleteBlog={handleDeleteBlog}
                 handler={() => setDeleteModal(true)}
               />
             ))}

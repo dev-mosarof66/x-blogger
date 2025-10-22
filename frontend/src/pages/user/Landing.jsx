@@ -1,82 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { MdTrendingUp } from "react-icons/md";
-import HeroImg from '../../assets/hero.jpg'
 import BlogCard from "../../components/custom/BlogCard";
 import { useSelector } from "react-redux";
+import Hero from "../../components/custom/Hero";
+import TrendingBlogs from "../../components/custom/TrendingBlogs";
+
 const Landing = () => {
 
     const { user } = useSelector(state => state.user)
+    const { blogs } = useSelector(state => state.userBlogs)
 
     return (
         <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 pt-20">
             {/* Hero Section */}
-            <section className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 py-20">
-                <motion.div
-                    initial={{ opacity: 0, x: -40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="flex flex-col gap-5 md:w-1/2"
-                >
-                    <h1 className="w-full max-w-sm text-3xl xs:text-4xl lg:text-5xl bg-gradient-to-r from-purple-600 to-cyan-400 text-transparent bg-clip-text">
-                        Start Your Tech Career
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg">
-                        Join a global tech community. Read cutting-edge tutorials, AI insights,
-                        DevOps guides, and more. Engage, learn, and grow with every blog.
-                    </p>
-                    <div className="flex items-center gap-4 mt-4">
-                        <Link
-                            to={user ? "/blogs" : "/register"}
-                            className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-full shadow-md hover:bg-purple-700 transition flex items-center gap-2"
-                        >
-                            Start Reading
-                        </Link>
-                        <Link
-                            to="/blogs"
-                            className="px-6 py-3 border border-purple-600 text-purple-600 dark:text-purple-400 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition"
-                        >
-                            Explore Blogs
-                        </Link>
-                    </div>
-                </motion.div>
-
-                {/* Hero Image */}
-                <motion.div
-                    initial={{ opacity: 0, x: 40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="md:w-1/2 mt-10 md:mt-0 rounded-xl overflow-hidden"
-                >
-                    <img
-                        src={HeroImg}
-                        alt="Tech Hero"
-                        className="w-full mx-auto drop-shadow-xl"
-                    />
-                </motion.div>
-            </section>
+            <Hero user={user} />
 
             {/* Trending Tech Blogs */}
-            <section className="max-w-7xl mx-auto px-6 lg:px-0 py-16">
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="text-2xl font-bold mb-8 flex items-center gap-2 relative"
-                >
-                    Trending Blogs
-                    <div className="absolute h-[2px] bg-purple-500 w-28 -bottom-1" />
-                </motion.h2>
-
-                <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {[1, 2, 3].map((i) => (
-                        <BlogCard key={i} i={i} />
-                    ))}
-                </div>
-            </section>
-
+            <TrendingBlogs />
             {/* all blogs  */}
             <section className="max-w-7xl mx-auto px-6 lg:px-0 py-16">
                 <motion.h2
