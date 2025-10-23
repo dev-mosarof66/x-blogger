@@ -135,7 +135,7 @@ const AdminSidebar = () => {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        className="ml-4 flex flex-col gap-2 py-2"
+                                        className="ml-4 flex flex-col gap-2 py-2 text-gray-800 dark:text-gray-200"
                                     >
                                         {item.sub.map((subItem) => (
                                             <li
@@ -144,10 +144,10 @@ const AdminSidebar = () => {
                                                     setActivePath(subItem.path);
                                                     navigate(subItem.path)
                                                 }}
-                                                className={`flex items-center gap-2 w-full px-2 py-1 rounded-md text-sm cursor-pointer transition-all duration-300 delay-75
+                                                className={`flex items-center gap-2 w-full px-2 py-2 rounded-md text-sm cursor-pointer transition-all duration-300 delay-75
                                                ${isActive(subItem.path)
-                                                        ? "bg-purple-800/40 text-white"
-                                                        : "hover:bg-purple-800/20 text-gray-300"}`}
+                                                        ? "bg-purple-800/40 "
+                                                        : "hover:bg-purple-800/20"}`}
                                             >
                                                 {subItem.icon()}
                                                 {subItem.name}

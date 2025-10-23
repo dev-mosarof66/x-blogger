@@ -13,10 +13,26 @@ const BlogList = () => {
   const dispatch = useDispatch();
   const { blogs } = useSelector((state) => state.adminBlogs);
   const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false);
 
   const handleBlogEdit = () => { };
-  const handleDeleteBlog = () => { };
+
+  const handleDeleteBlog = async (_id) => {
+    console.log('handle delete pressed')
+    console.log(_id)
+    setDeleteLoading(true)
+    try {
+      const res = await axiosInnstance.delete(`/admin/blogs/${_id}`)
+      console.log(res.data)
+      dispatch(setBlogs(res.data.blogs))
+    } catch (error) {
+      console.error('error while deleting the blog : ', error)
+    } finally {
+      setDeleteModal(false)
+      setDeleteLoading(false)
+    }
+  };
 
   // Fetch all blogs
   useEffect(() => {
@@ -35,7 +51,6 @@ const BlogList = () => {
     fetchBlogs();
   }, [dispatch]);
 
-  console.log(blogs)
 
   return (
     <div className="w-full h-full p-2 space-y-6 relative">
@@ -64,14 +79,26 @@ const BlogList = () => {
         ) : blogs.length > 0 ? (
           <div className="grid xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {blogs.map((blog, i) => (
-              <BlogCard
-                key={blog._id || i}
-                blog={blog}
-                i={i}
-                admin={true}
-                handleBlogEdit={handleBlogEdit}
-                handler={() => setDeleteModal(true)}
-              />
+              <>
+                <BlogCard
+                  key={blog._id || i}
+                  blog={blog}
+                  i={i}
+                  admin={true}
+                  handleBlogEdit={handleBlogEdit}
+                  handler={() => {
+                    setDeleteModal(true);
+                  }}
+                />
+                {/* Delete Modal */}
+                <DeleteModal
+                  isOpen={deleteModal}
+                  title={blog.title}
+                  onConfirm={() => handleDeleteBlog(blog._id)}
+                  onCancel={() => setDeleteModal(false)}
+                  loading={deleteLoading}
+                />
+              </>
             ))}
           </div>
         ) : (
@@ -88,13 +115,7 @@ const BlogList = () => {
         )}
       </div>
 
-      {/* Delete Modal */}
-      <DeleteModal
-        isOpen={deleteModal}
-        title="Blog name..."
-        onConfirm={handleDeleteBlog}
-        onCancel={() => setDeleteModal(false)}
-      />
+
     </div>
   );
 };

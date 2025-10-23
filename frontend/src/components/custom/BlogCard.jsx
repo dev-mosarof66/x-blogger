@@ -9,7 +9,6 @@ import moment from 'moment'
 
 const BlogCard = ({ i, admin = false, handler, blog }) => {
     const router = useNavigate();
-    console.log(blog)
 
     if (!blog) {
         return <p>
@@ -23,7 +22,7 @@ const BlogCard = ({ i, admin = false, handler, blog }) => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
             viewport={{ once: true }}
-            onClick={() => router(`/blog/${i}`)}
+            onClick={() => router(`/blog/${blog._id}`)}
             className="group bg-gray-100 dark:bg-gray-800 relative shadow-md rounded-2xl overflow-hidden 
                  hover:shadow-black/20 active:scale-95 cursor-pointer 
                  transition-all duration-300 delay-75 border border-transparent"
@@ -38,13 +37,11 @@ const BlogCard = ({ i, admin = false, handler, blog }) => {
                 {/* Category Chip */}
                 <div className="w-full bg-black">
                     <div className=" absolute top-3 left-3">
-                        {
-                            blog.tags.map((tag, ind) => (
-                                <p key={ind} className=" bg-purple-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
-                                    {tag}
-                                </p>
-                            ))
-                        }
+
+                        <p className=" bg-purple-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
+                            {blog.tags[0]}
+                        </p>
+
                     </div>
                 </div>
 

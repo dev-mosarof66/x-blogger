@@ -3,7 +3,7 @@ import React from "react";
 import { FaTrash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-const DeleteModal = ({ isOpen, title, onConfirm, onCancel }) => {
+const DeleteModal = ({ isOpen, title, onConfirm, onCancel, loading }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -16,7 +16,7 @@ const DeleteModal = ({ isOpen, title, onConfirm, onCancel }) => {
                 >
                     {/* Modal */}
                     <motion.div
-                        className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-80"
+                        className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-lg p-6 w-80"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
@@ -27,7 +27,7 @@ const DeleteModal = ({ isOpen, title, onConfirm, onCancel }) => {
                                 <FaTrash />
                             </div>
                             <p className="text-center">
-                                Are you sure you want to delete{" "}
+                                Are you sure you want to delete{" "} -
                                 <span className="text-purple-600">{title}</span>?
                             </p>
 
@@ -39,10 +39,13 @@ const DeleteModal = ({ isOpen, title, onConfirm, onCancel }) => {
                                     Cancel
                                 </button>
                                 <button
-                                    onClick={onConfirm}
+                                    onClick={() => onConfirm()}
                                     className="flex-1 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-lg py-2  cursor-pointer transition-all duration-300 delay-75"
                                 >
-                                    Delete
+                                    {
+                                        loading ? <span className="loading loading-spinner loading-xs"></span>
+                                            : "Delete"
+                                    }
                                 </button>
                             </div>
                         </div>

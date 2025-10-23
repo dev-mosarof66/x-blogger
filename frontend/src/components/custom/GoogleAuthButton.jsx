@@ -15,6 +15,7 @@ const GoogleAuthButton = () => {
       })
       console.log(res.data)
       if (res.status === 201) {
+        //settokenere
         navigate('/')
       }
     } catch (error) {

@@ -5,9 +5,10 @@ import { FaEye, FaSave } from "react-icons/fa";
 import PreviewBlog from "../../components/admin/PreviewBlog";
 import { toast } from 'react-hot-toast'
 import BlogModal from "../../components/admin/AdminBlogModal";
+import BlogEditor from "../../components/admin/BlogEditor";
 
 
-function BlogEditor() {
+function CreateBlog() {
   const [value, setValue] = useState("");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [saveBlogModal, setSaveBlogModal] = useState(false)
@@ -49,7 +50,7 @@ function BlogEditor() {
     },
   };
 
-  const handleSaveDraft =  () => {
+  const handleSaveDraft = () => {
     if (value.trim() === '') {
       toast.error('No word found in your blog.')
       return;
@@ -82,16 +83,7 @@ function BlogEditor() {
       </div>
 
       {/* Editor */}
-      <div className="p-0 text-black dark:text-white h-[400px]">
-        <ReactQuill
-          ref={quillRef}
-          theme="snow"
-          value={value}
-          onChange={setValue}
-          modules={modules}
-          className="h-full rounded-md"
-        />
-      </div>
+      <BlogEditor value={value} quillRef={quillRef} setValue={setValue} modules={modules} />
 
       {/* Preview Modal */}
       <PreviewBlog value={value} isPreviewOpen={isPreviewOpen} setIsPreviewOpen={setIsPreviewOpen} />
@@ -100,4 +92,4 @@ function BlogEditor() {
   );
 }
 
-export default BlogEditor;
+export default CreateBlog;

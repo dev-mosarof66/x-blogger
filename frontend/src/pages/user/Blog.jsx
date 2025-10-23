@@ -1,109 +1,101 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BlogInteractions from "../../components/custom/BlogInteraction";
-
-const dummyBlogs = [
-    {
-        id: 1,
-        title: "Understanding AI: A Beginner's Guide",
-        content: "Artificial Intelligence (AI) is transforming industries...",
-        image: "https://picsum.photos/seed/tech1/600/400",
-        tags: ["AI", "Machine Learning"],
-    },
-    {
-        id: 2,
-        title: "Top 10 Web Development Frameworks in 2025",
-        content: "Web development continues to evolve...",
-        image: "https://picsum.photos/seed/tech2/600/400",
-        tags: ["Web Development", "Frontend"],
-    },
-    {
-        id: 3,
-        title: "Cloud Computing Essentials for Developers",
-        content: "Cloud computing powers modern apps...",
-        image: "https://picsum.photos/seed/tech3/600/400",
-        tags: ["Cloud", "DevOps"],
-    },
-    {
-        id: 1,
-        title: "Understanding AI: A Beginner's Guide",
-        content: "Artificial Intelligence (AI) is transforming industries...",
-        image: "https://picsum.photos/seed/tech1/600/400",
-        tags: ["AI", "Machine Learning"],
-    },
-    {
-        id: 2,
-        title: "Top 10 Web Development Frameworks in 2025",
-        content: "Web development continues to evolve...",
-        image: "https://picsum.photos/seed/tech2/600/400",
-        tags: ["Web Development", "Frontend"],
-    },
-    {
-        id: 3,
-        title: "Cloud Computing Essentials for Developers",
-        content: "Cloud computing powers modern apps...",
-        image: "https://picsum.photos/seed/tech3/600/400",
-        tags: ["Cloud", "DevOps"],
-    },
-
-];
+import axiosInstance from "../../utils/axios";
+import moment from "moment";
+import parse from "html-react-parser";
+import { useSelector } from "react-redux";
 
 const Blog = () => {
     const { id } = useParams();
-    const blog = dummyBlogs.find((b) => b.id.toString() === id.toString());
+    const [blog, setBlog] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { user } = useSelector((state) => state.user)
 
-    if (!blog) {
+    useEffect(() => {
+        const fetchBlog = async () => {
+            try {
+                const res = await axiosInstance.get(`/admin/blogs/${id}`);
+                setBlog(res.data.blog);
+            } catch (error) {
+                console.error("Error fetching blog by ID:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchBlog();
+    }, [id]);
+
+
+
+    // Handle loading
+    if (loading) {
         return (
-            <div className="w-full max-w-7xl mx-auto min-h-screen py-20 text-center text-gray-600 dark:text-gray-400">
-                Blog not found.
+            <div className="flex items-center justify-center min-h-screen text-gray-600 dark:text-gray-400">
+                Loading blog...
             </div>
         );
     }
 
+
+    // Handle missing blog
+    if (!blog) {
+        return (
+            <div className="flex items-center justify-center min-h-screen text-gray-600 dark:text-gray-400">
+                Sorry, we couldn’t find this blog post.
+            </div>
+        );
+    }
+
+
     return (
-        <div className="w-full max-w-[90%] min-h-screen mx-auto py-20">
-            {/* Title */}
-            <h1 className="text-3xl sm:text-4xl font-bold mb-4">{blog.title}</h1>
+        <article className="w-full max-w-[90%] min-h-screen mx-auto py-20 text-black dark:text-white">
+            {/* Header */}
+            <header className="w-full flex flex-col gap-2">
+                <h1 className="text-3xl sm:text-4xl font-bold">
+                    {blog.title || "Untitled Blog"}
+                    <span className="font-normal text-sm mx-4 bg-purple-500 p-1 rounded-md text-black">{user.role === 'admin' && (blog.status)}</span>
+                </h1>
+                <p className="text-gray-500 dark:text-gray-400">
+                    {moment(blog.createdAt).format("DD MMM YYYY")}
+                </p>
+            </header>
 
-            {/* Author and Date */}
-            <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-                <span>{blog.date}</span>
-            </div>
             {/* Tags */}
-            <div className="clear-left flex flex-wrap gap-2 py-4">
-                {blog.tags.map((tag, idx) => (
-                    <span
-                        key={idx}
-                        className="bg-purple-200 dark:bg-purple-700 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-md text-sm"
-                    >
-                        {tag}
-                    </span>
-                ))}
-            </div>
-            {/* Blog content with floating image */}
-            <div className="overflow-auto">
-                <img
-                    src={blog.image}
-                    alt={blog.title}
-                    className="lg:float-left w-full max-w-xl h-72 mb-4 mr-0 md:mr-6 rounded-xl shadow-md"
-                />
-
-                <div className="w-full">
-                    {blog.content.split("\n").map((line, i) => (
-                        <p key={i}>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, ad libero! Nobis odio harum debitis similique totam impedit dicta beatae accusantium nesciunt nostrum dolores, non minima ab a vel quae eum magnam praesentium maxime ea vero quibusdam eveniet. Reiciendis corrupti, voluptates commodi iusto laborum consequuntur fugit aspernatur magnam eveniet recusandae doloremque et modi accusantium id dignissimos magni? Tempora alias a eos numquam nemo deserunt odit earum soluta. Illum sit rem, perspiciatis facilis enim cupiditate consectetur in harum quia iusto corrupti voluptatum quibusdam ut cum consequatur tenetur excepturi molestias qui error assumenda. Tempora hic quam dignissimos, voluptatum maxime ab rem velit laboriosam. Vero, molestiae nam! Dolorem rem excepturi quia veritatis porro ad qui neque nostrum accusamus, fuga officia minus consequatur. Quas error at modi quod animi aliquid! Nulla, rem fuga dicta vel quas necessitatibus.
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, ad libero! Nobis odio harum debitis similique totam impedit dicta beatae accusantium nesciunt nostrum dolores, non minima ab a vel quae eum magnam praesentium maxime ea vero quibusdam eveniet. Reiciendis corrupti, voluptates commodi iusto laborum consequuntur fugit aspernatur magnam eveniet recusandae doloremque et modi accusantium id dignissimos magni? Tempora alias a eos numquam nemo deserunt odit earum soluta. Illum sit rem, perspiciatis facilis enim cupiditate consectetur in harum quia iusto corrupti voluptatum quibusdam ut cum consequatur tenetur excepturi molestias qui error assumenda. Tempora hic quam dignissimos, voluptatum maxime ab rem velit laboriosam. Vero, molestiae nam! Dolorem rem excepturi quia veritatis porro ad qui neque nostrum accusamus, fuga officia minus consequatur. Quas error at modi quod animi aliquid! Nulla, rem fuga dicta vel quas necessitatibus.
-                        </p>
+            {Array.isArray(blog.tags) && blog.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 py-4">
+                    {blog.tags.map((tag, idx) => (
+                        <span
+                            key={idx}
+                            className="bg-purple-200 dark:bg-purple-700 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-md text-sm"
+                        >
+                            {tag}
+                        </span>
                     ))}
                 </div>
+            )}
 
+            {/* Blog content */}
+            <section className="overflow-auto">
+                {blog.coverImage?.url && (
+                    <img
+                        src={blog.coverImage.url}
+                        alt={blog.title || "blog cover"}
+                        className="lg:float-left w-full max-w-xl h-72 mb-4 md:mr-6 rounded-xl shadow-md object-cover"
+                    />
+                )}
 
-            </div>
-            <div className="w-full bg-gradient-to-r my-10 from-transparent via-purple-700 to-transparent h-0.5" />
-            <div>
-                <BlogInteractions />
-            </div>
-        </div>
+                <div className="w-full prose dark:prose-invert max-w-none">
+                    {parse(blog.content)}
+                </div>
+            </section>
+
+            {/* Divider */}
+            <div className="w-full my-10 h-[1px] bg-gradient-to-r from-transparent via-purple-700 to-transparent" />
+
+            {/* Interactions */}
+            <BlogInteractions />
+        </article>
     );
 };
 
