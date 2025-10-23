@@ -130,7 +130,9 @@ export const loginUser = async (req, res) => {
         res.cookie('access_token', accessToken,cookieOptions)
         res.cookie('refresh_token', refreshToken,cookieOptions)
 
-        return res.status(201).json({ success: true, user });
+        
+
+        return res.status(201).json({ success: true, user,token });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }

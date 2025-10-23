@@ -147,8 +147,15 @@ export const deleteBlog = async (req, res) => {
             return res.status(402).json({ success: false, message: 'Error while deleting the cover iamge.' });
         }
 
-        await Blog.findByIdAndDelete(blog._id)
-        return res.status(200).json({ success: true, message: "Blog deleted successfully" });
+        const deletedBlog = await Blog.findByIdAndDelete(blog._id)
+        if (!deletedBlog) {
+            return res.status(401).json({
+                success: false,
+                message: "Error while deleting the blog"
+            })
+        }
+        const blogs = await Blog.find().sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, message: "Blog deleted successfully", blogs });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -158,6 +165,22 @@ export const getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 });
         return res.status(201).json({ success: true, blogs });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+export const getBlogById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(401).json({
+                success: false,
+                message: "Blog id not found."
+            })
+        }
+        const blog = await Blog.findById(id);
+        return res.status(201).json({ success: true, blog });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -232,12 +255,56 @@ export const deleteTag = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select("-password").sort({ createdAt: -1 });
+        const users = await User.find({ role: "user" }).select("-password").sort({ createdAt: -1 });
         return res.status(200).json({ success: true, users });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const deleteUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(401).json({
+                success: false,
+                message: "No User Id found."
+            })
+        }
+        const user = await User.findById(id)
+
+        if (user.avatar.public_id) {
+            const deletedCoverImage = await imagekit.deleteFile(user.avatar.public_id)
+
+            if (!deletedCoverImage) {
+                return res.status(402).json({ success: false, message: 'Error while deleting the cover iamge.' });
+            }
+        }
+
+        const deletedUser = await User.findByIdAndDelete(id)
+
+        if (!deletedUser) {
+            return res.status(401).json({
+                success: false,
+                message: "Error while deleting  user."
+            })
+        }
+        const users = await User.find({ role: "user" }).select("-password").sort({ createdAt: -1 });
+
+        return res.status(201).json({
+            success: true,
+            message: "User fetched successfully.",
+            users
+
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error.'
+        })
+    }
+}
 
 export const toggleUserStatus = async (req, res) => {
     try {
@@ -248,11 +315,16 @@ export const toggleUserStatus = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" });
 
         user.isBanned = !user.isBanned;
-        await user.save();
+        await user.save({
+            validateBeforeSave: false
+        });
+
+        const users = await User.find({ role: "user" }).select("-password").sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             message: `User ${user.isBanned ? "banned" : "unbanned"} successfully`,
+            users
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
