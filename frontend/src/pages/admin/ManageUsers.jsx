@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axios";
-import { FaTrash, FaBan, FaCheck, FaSync } from "react-icons/fa";
+import { FaTrash, FaBan, FaCheck, FaSync, FaExclamationTriangle } from "react-icons/fa";
 import { toast } from 'react-hot-toast'
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -56,10 +56,14 @@ const ManageUsers = () => {
   };
 
   return (
-    <div>
-      <p className="block xs:hidden text-center text-black dark:text-white font-semibold">Please visit this page in large screen</p>
+    <div className="w-full overflow-scroll">
+      <p className=" sm:hidden text-center text-black dark:text-white font-semibold flex flex-col items-center justify-center gap-2 mt-10">
+        <FaExclamationTriangle className="text-yellow-500 text-4xl animate-bounce" />
+        Please visit this page on a larger screen
+      </p>
+
       {/* for large screen  */}
-      <div className=" hidden xs:block">
+      <div className=" hidden sm:block">
         <div className="min-h-screen text-gray-900 dark:text-gray-100">
           {/* Header */}
           <div className="flex justify-between items-center mb-2">
@@ -95,10 +99,10 @@ const ManageUsers = () => {
                   {users.map((user) => (
                     <tr
                       key={user._id}
-                      className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+                      className="border-b"
                     >
                       <td className="p-3 font-medium">{user.name}</td>
-                      <td className="p-3">{user.email}</td>
+                      <td className="p-3 truncate">{user.email}</td>
                       <td className="p-3">{user.read.length}</td>
                       <td className="p-3">
                         {user.isBanned ? (
@@ -117,7 +121,7 @@ const ManageUsers = () => {
                         })}
 
                       </td>
-                      <td className="p-3 flex items-center justify-center gap-3">
+                      <td className="flex p-1 gap-3">
                         <button
                           onClick={() =>
                             handleBanToggle(user._id)

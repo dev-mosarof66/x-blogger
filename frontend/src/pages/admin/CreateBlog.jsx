@@ -6,9 +6,11 @@ import PreviewBlog from "../../components/admin/PreviewBlog";
 import { toast } from 'react-hot-toast'
 import BlogModal from "../../components/admin/AdminBlogModal";
 import BlogEditor from "../../components/admin/BlogEditor";
-
+import {useSelector} from 'react-redux'
 
 function CreateBlog() {
+  const {tags} = useSelector(state=> state.tags)
+  console.log(tags)
   const [value, setValue] = useState("");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [saveBlogModal, setSaveBlogModal] = useState(false)
@@ -87,7 +89,7 @@ function CreateBlog() {
 
       {/* Preview Modal */}
       <PreviewBlog value={value} isPreviewOpen={isPreviewOpen} setIsPreviewOpen={setIsPreviewOpen} />
-      <BlogModal open={saveBlogModal} setOpen={setSaveBlogModal} content={value} />
+      <BlogModal open={saveBlogModal} setOpen={setSaveBlogModal} content={value} tagList={tags} />
     </div>
   );
 }

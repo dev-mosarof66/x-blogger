@@ -4,14 +4,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { FaTimes } from "react-icons/fa";
 import "react-quill-new/dist/quill.snow.css";
 import axiosInstance from "../../utils/axios";
+import toast from "react-hot-toast";
 
-const tagList = [
-    "Web Development",
-    "Artificial Intelligence",
-    "Machine Learning",
-];
-
-export default function BlogModal({ open, setOpen, content }) {
+export default function BlogModal({ open, setOpen, content,tagList }) {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false)
     const [title, setTitle] = useState("");
@@ -43,9 +38,12 @@ export default function BlogModal({ open, setOpen, content }) {
                     'Content-Type': "multipart/formdata"
                 }
             });
-            console.log(res.data);
-            setOpen(false);
-            setStep(1);
+            if (res.data.success) {
+                console.log(res.data);
+                toast.success(res.data.message)
+                setOpen(false);
+                setStep(1);
+            }
         } catch (error) {
             console.error('Error creating new blog:', error);
             alert("Failed to create blog. Please try again.");
@@ -71,10 +69,10 @@ export default function BlogModal({ open, setOpen, content }) {
 
 
     return (
-        <div className="w-full h-screen flex justify-center">
+        <div className="w-full flex justify-center">
             {open && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
-                    <div className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-lg w-full flex flex-col gap-4 max-w-md p-6 relative overflow-hidden">
+                    <div className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-lg w-full flex flex-col gap-4 max-w-lg p-6 relative overflow-hidden">
                         {/* header */}
                         <div className="w-full flex items-center justify-between">
                             <h2 className="text-xl sm:text-2xl font-semibold mb-4">
@@ -187,9 +185,9 @@ export default function BlogModal({ open, setOpen, content }) {
                                                     tagList.map((tag, index) => (
                                                         <p key={index}
 
-                                                            onClick={() => handleTags(tag)}
+                                                            onClick={() => handleTags(tag.name)}
 
-                                                            className={`text-xs border px-1 py-2 rounded-md border-purple-500 text-center ${tags.includes(tag) ? "bg-purple-600" : "hover:bg-purple-500"}  active:scale-95 cursor-pointer transition-all duration-300 delay-75`}>{tag}</p>
+                                                            className={`text-xs border px-1 py-2 rounded-md border-purple-500 text-center ${tags.includes(tag.name) ? "bg-purple-600" : "hover:bg-purple-500"}  active:scale-95 cursor-pointer transition-all duration-300 delay-75`}>{tag.name}</p>
                                                     ))
                                                 }
                                             </div>

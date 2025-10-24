@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import BlogCard from "../../components/custom/BlogCard";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const dummyBlogs = [
   {
@@ -32,16 +34,25 @@ const Blogs = () => {
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filter, setFilter] = useState("All");
+  const { blogs } = useSelector(state => state.blogs)
+  const { tags } = useSelector(state => state.tags)
+  console.log(tags)
+  const allTags = ["All", ...new Set(tags.flatMap((b) => b.name))];
 
-  const allTags = ["All", ...new Set(dummyBlogs.flatMap((b) => b.tags))];
-
-  const filteredBlogs = dummyBlogs.filter((blog) => {
+  const filteredBlogs = blogs.filter((blog) => {
     const matchesSearch =
       blog.title.toLowerCase().includes(search.toLowerCase()) ||
       blog.content.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = filter === "All" || blog.tags.includes(filter);
     return matchesSearch && matchesFilter;
   });
+
+  //reset to 0
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
 
   return (
     <div className="max-w-7xl mx-auto min-h-screen px-6 lg:px-0 py-20">
@@ -63,7 +74,7 @@ const Blogs = () => {
         <div className="relative">
           <div
             onClick={() => setShowFilter(!showFilter)}
-            className="flex items-center gap-2 bg-purple-600 px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-purple-700 active:scale-95  cursor-pointer transition-all duration-300 delay-75" 
+            className="flex items-center gap-2 bg-purple-600 px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-purple-700 active:scale-95  cursor-pointer transition-all duration-300 delay-75"
           >
             <FaFilter />
             <span className="hidden sm:block">{filter}</span>
@@ -78,9 +89,8 @@ const Blogs = () => {
                     setFilter(tag);
                     setShowFilter(false);
                   }}
-                  className={`block px-4 py-1 w-full text-left rounded-md hover:bg-purple-500 ${
-                    tag === filter ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
-                  } cursor-pointer transition-all duration-300 delay-75`}
+                  className={`block px-4 py-1 w-full text-left rounded-md hover:bg-purple-500 ${tag === filter ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+                    } cursor-pointer transition-all duration-300 delay-75`}
                 >
                   {tag}
                 </button>

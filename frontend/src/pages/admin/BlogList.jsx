@@ -7,7 +7,7 @@ import { setBlogs } from "../../features/admin-blog.slices";
 import BlogCard from "../../components/custom/BlogCard";
 import DeleteModal from "../../components/custom/DeleteModal";
 import { BlogCardPlaceholder } from "../../components/ui/Placeholder";
-
+import {toast} from 'react-hot-toast'
 const BlogList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,6 +34,18 @@ const BlogList = () => {
     }
   };
 
+  const handlePublish = async(id)=>{
+    console.log(id)
+    try {
+      const res = await axiosInnstance.put(`/admin/auth/blog-status/${id}`)
+      if(res.data.success){
+        toast.success(res.data.message)
+        dispatch(setBlogs(res.data.blogs))
+      }
+    } catch (error) {
+      console.log('error while publishing the blog : ',error)
+    }
+  }
   // Fetch all blogs
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -53,7 +65,7 @@ const BlogList = () => {
 
 
   return (
-    <div className="w-full h-full p-2 space-y-6 relative">
+    <div className="w-full h-full p-2 space-y-6 relative pb-20">
       {/* Create Blog Button */}
       <div className="flex justify-end">
         {
@@ -89,6 +101,7 @@ const BlogList = () => {
                   handler={() => {
                     setDeleteModal(true);
                   }}
+                  onPublish={handlePublish}
                 />
                 {/* Delete Modal */}
                 <DeleteModal

@@ -8,6 +8,8 @@ const ProfileBox = ({ user, onClick }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const isPublic = location.pathname === '/' ? true : location.pathname.includes('/blog') ? true : location.pathname === '/news-letter' ? true : false;
+
   return (
     <div
       onClick={onClick}
@@ -26,7 +28,7 @@ const ProfileBox = ({ user, onClick }) => {
           </div>
         )
       ) : (
-        location.pathname === '/' ?
+        isPublic ?
           <div onClick={() => navigate('/login')} className="w-7 h-7 rounded-full bg-purple-500 hover:bg-purple-700 active:scale-95 flex items-center justify-center text-white font-semibold  transition duration-300 delay-75">
             <FaUser size={16} />
           </div> : <div className="p-1 rounded-full border border-purple-700 bg-gray-300 dark:bg-gray-800 animate-pulse" />

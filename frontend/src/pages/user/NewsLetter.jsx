@@ -1,17 +1,28 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from 'react-hot-toast'
+import { useSelector } from 'react-redux'
+import axionInstance from '../../utils/axios'
 
 const NewsLetter = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { user } = useSelector(state => state.user)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubmitted(true);
-      setEmail("");
-      setTimeout(() => setSubmitted(false), 3000);
+    if (email.trim() === '') { toast.error("Email can't be empty."); return; }
+    if (!user) { toast.error('Please login to subscribe.'); setEmail(""); return; }
+    try {
+      const res = await axionInstance.post("/user/news-letter", { email })
+      if (res.data.success) {
+        toast.success('You have successfully subscribed.')
+        setSubmitted(true)
+      }
+    } catch (error) {
+      toast.error('Please check your internet connection.')
+      console.log('Error while subscribing to news letter.Please Try again.')
     }
   };
 
@@ -51,7 +62,7 @@ const NewsLetter = () => {
           />
           <button
             type="submit"
-            className="px-6 py-3 rounded-md bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-semibold transition-all transform hover:scale-105 cursor-pointer shadow-md"
+            className="w-full sm:w-fit px-6 py-3 rounded-md bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-semibold transition-all transform hover:scale-105 cursor-pointer shadow-md"
           >
             Subscribe
           </button>

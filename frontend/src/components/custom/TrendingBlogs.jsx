@@ -3,9 +3,10 @@ import React from 'react'
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import BlogCard from './BlogCard';
 
 const TrendingBlogs = () => {
-    const { blogs } = useSelector(state => state.userBlogs)
+    const {trendingBlogs } = useSelector(state => state.blogs)
     return (
         <section className="max-w-7xl mx-auto px-6 lg:px-0 py-16">
             <motion.h2
@@ -21,8 +22,9 @@ const TrendingBlogs = () => {
 
             <div className='flex-1 flex items-center justify-center'>
                 {
-                    blogs.length > 0 ? <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        {blogs.map((blog, i) => (
+                    trendingBlogs.length > 0 ? 
+                    <div className="w-full grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        {trendingBlogs.map((blog, i) => (
                             <BlogCard key={blog._id} i={i} blog={blog} />
                         ))}
                     </div> :

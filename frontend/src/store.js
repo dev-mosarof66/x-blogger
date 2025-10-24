@@ -4,7 +4,9 @@ import userReducer from './features/user.slices'
 import adminReducer from './features/admin.slices'
 import adminStatsReducer from './features/admin-stats.slices'
 import adminBlogReducer from './features/admin-blog.slices'
-import userBlogReducer from './features/user-blogs.slices'
+import tagReducer from './features/tags.slices'
+import blogReducer from './features/blogs.slices'
+
 
 const store = configureStore({
     reducer: {
@@ -13,7 +15,8 @@ const store = configureStore({
         admin: adminReducer,
         adminStats: adminStatsReducer,
         adminBlogs: adminBlogReducer,
-        userBlogs: userBlogReducer,
+        tags: tagReducer,
+        blogs: blogReducer
     }
 })
 

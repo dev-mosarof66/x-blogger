@@ -2,21 +2,34 @@ import { useState } from "react";
 import { MdLogout, MdPerson } from "react-icons/md";
 import ThemeSetter from "../custom/ThemeSetter";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileBox from "../custom/ProfileBox";
+import axiosInstance from "../../utils/axios";
+import { setUser } from "../../features/user.slices";
+import toast from "react-hot-toast";
 
 const AdminHeader = () => {
+  const dispatch = useDispatch()
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
 
-  console.log(user);
-
   const handleLogout = async () => {
-    console.log("admin logout clicked.");
-  };
+    try {
+      const res = await axiosInstance.post('/user/logout')
+      console.log(res.data)
+      if (res.data.success) {
+        dispatch(setUser(null))
+        toast.success("Logged out successfully.")
+        navigate('/')
+      }
+
+    } catch (error) {
+      console.log('error while logging out the user : ', error)
+    }
+  }
   return (
-    <div className="w-full flex justify-end gap-4 items-center px-0 sm:px-4 border-b border-purple-600/20 pb-1">
+    <div className="w-full flex justify-end gap-4 items-center px-0 sm:px-4 border-b border-purple-600/20 pb-2">
       {/* Theme Switch */}
       <ThemeSetter />
 

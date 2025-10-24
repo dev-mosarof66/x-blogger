@@ -9,7 +9,7 @@ import TrendingBlogs from "../../components/custom/TrendingBlogs";
 const Landing = () => {
 
     const { user } = useSelector(state => state.user)
-    const { blogs } = useSelector(state => state.userBlogs)
+    const { blogs } = useSelector(state => state.blogs)
 
     return (
         <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 pt-20">
@@ -32,8 +32,8 @@ const Landing = () => {
                 </motion.h2>
 
                 <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                        <BlogCard key={i} i={i} />
+                    {blogs.slice(0, 4).map((blog, i) => (
+                        <BlogCard key={i} i={i} blog={blog} />
                     ))}
                 </div>
             </section>
