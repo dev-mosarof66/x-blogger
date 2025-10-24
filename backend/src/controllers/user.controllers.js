@@ -11,6 +11,9 @@ import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 import bcrypt from 'bcryptjs';
 import { cookieOptions } from '../utils/cookie-options.js';
+import fs from 'fs'
+import Tag from '../models/tag.models.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -127,12 +130,12 @@ export const loginUser = async (req, res) => {
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
-        res.cookie('access_token', accessToken,cookieOptions)
-        res.cookie('refresh_token', refreshToken,cookieOptions)
+        res.cookie('access_token', accessToken, cookieOptions)
+        res.cookie('refresh_token', refreshToken, cookieOptions)
 
-        
 
-        return res.status(201).json({ success: true, user,token });
+
+        return res.status(201).json({ success: true, user, token });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -316,6 +319,52 @@ export const updateProfile = async (req, res) => {
     }
 };
 
+export const changeAvatar = async (req, res) => {
+    try {
+        const user = req.user
+        const avatarPath = req.file
+
+        console.log(avatarPath)
+
+        if (!avatarPath) {
+            return res.status(402).json({
+                message: "No avatar found.",
+                success: false
+            })
+        }
+        const upload = await imagekit.upload({
+            file: fs.readFileSync(req.file.path),
+            fileName: req.file.originalname,
+            folder: "/blogger/avatar"
+        })
+
+        fs.unlinkSync(req.file.path);
+
+        const avatar = {
+            url: upload.url,
+            public_id: upload.fileId
+        }
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            { avatar },
+            { new: true }
+        ).select("-password");
+
+        if (!updatedUser) {
+            return res.status(402).json({
+                message: "Error while updating the avatar.",
+                success: false
+            })
+        }
+
+        const updatedNewUser = await User.findById(updatedUser._id)
+        console.log(updatedNewUser)
+        return res.status(201).json({ success: true, user: updatedNewUser });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 export const deleteProfile = async (req, res) => {
     try {
         const user = req.user
@@ -389,15 +438,7 @@ export const reactBlog = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-export const getAllBlogs = async (req, res) => {
-    try {
-        const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
-        console.log(blogs)
-        return res.status(201).json({ success: true, blogs });
-    } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
-    }
-};
+
 
 export const commentOnBlog = async (req, res) => {
     try {
@@ -525,3 +566,82 @@ export const googleLogin = async (req, res) => {
     }
 }
 
+
+// public route 
+
+export const trendingBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find().sort({ views: -1 }).limit(2)
+        console.log(blogs)
+        return res.status(201).json({
+            success: true,
+            blogs
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
+export const getAllBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
+        return res.status(201).json({ success: true, blogs });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+export const getBlogById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(401).json({
+                success: false,
+                message: "Blog id not found."
+            })
+        }
+        const blog = await Blog.findById(id);
+        return res.status(201).json({ success: true, blog });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const incrementView = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        console.log(id, "Incrementing the view")
+
+        if (!id) {
+            return res.status(401).json({
+                success: false,
+                message: "Blog id not found."
+            })
+        }
+        const blog = await Blog.findById(id);
+        blog.views = blog.views + 1;
+        await blog.save({
+            validateBeforeSave: false
+        })
+        return res.status(201).json({ success: true });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+
+export const getAllTags = async (req, res) => {
+    try {
+        const tags = await Tag.find();
+        console.log(tags)
+        return res.status(200).json({ success: true, tags });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};

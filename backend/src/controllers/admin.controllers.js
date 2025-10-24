@@ -196,7 +196,8 @@ export const toggleBlogStatus = async (req, res) => {
         blog.status = blog.status === "published" ? "draft" : "published";
         await blog.save();
 
-        return res.status(200).json({ success: true, message: `Blog set to ${blog.status}`, blog });
+        const blogs = await Blog.find().sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, message: "Blog published successfully.", blogs });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -218,8 +219,19 @@ export const createTag = async (req, res) => {
         if (existingTag)
             return res.status(400).json({ success: false, message: "Tag already exists" });
 
-        const tag = await Tag.create({ name });
-        return res.status(201).json({ success: true, message: "Tag created successfully", tag });
+        const tag = await Tag({ name });
+
+        if (!tag) {
+            return res.status(401).json({
+                success: false,
+                message: 'Error while creating new tag'
+            })
+        }
+        await tag.save({
+            validateBeforeSave: false
+        })
+        const tags = await Tag.find()
+        return res.status(201).json({ success: true, message: "Tag created successfully", tags });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -244,7 +256,8 @@ export const deleteTag = async (req, res) => {
         if (!tag)
             return res.status(404).json({ success: false, message: "Tag not found" });
 
-        return res.status(200).json({ success: true, message: "Tag deleted successfully" });
+        const tags = await Tag.find()
+        return res.status(200).json({ success: true, message: "Tag deleted successfully", tags });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }

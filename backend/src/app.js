@@ -73,12 +73,12 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Rate Limiter
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: "Too many requests from this IP, please try again later",
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   message: "Too many requests from this IP, please try again later",
+// });
+// app.use(limiter);
 
 // Static Files
 app.use(express.static("public"));

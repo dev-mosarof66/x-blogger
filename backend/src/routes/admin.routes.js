@@ -16,7 +16,7 @@ router.route('/tags').post(verifyToken, verifyAdmin, createTag)
 router.route('/tags/:id').delete(verifyToken, verifyAdmin, deleteTag)
 router.route('/users').get(verifyToken, verifyAdmin, getAllUsers)
 router.route('/stats').get(verifyToken, verifyAdmin, getAnalytics)
-router.route('/auth/blog-status/:id').get(verifyToken, verifyAdmin, toggleBlogStatus)
+router.route('/auth/blog-status/:id').put(verifyToken, verifyAdmin, toggleBlogStatus)
 router.route('/auth/user/:id').put(verifyToken, verifyAdmin, toggleUserStatus)
 router.route('/auth/user/:id').delete(verifyToken, verifyAdmin, deleteUserById)
 
